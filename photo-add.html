@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Add photos — BaanRight</title>
+<link rel="stylesheet" href="popup.css" />
+</head>
+<body class="page-desktop">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">&#3610;</span>
+      <div class="brand-text">
+        <span class="brand-name">Add photos</span>
+        <span class="brand-sub">Straight into your BaanRight photo tray</span>
+      </div>
+    </div>
+    <span class="topbar-hint">Safe tab &mdash; closing it never loses your photos</span>
+  </header>
+
+  <main class="panel panel-wide">
+    <section class="card">
+      <div class="card-head">
+        <h3>Pick listing photos</h3>
+        <span class="chip-btn" id="countChip">0 in tray</span>
+      </div>
+      <p class="hint">Choose, drop, or paste screenshots here &mdash; they go into the same tray the extension popup shows, ready to tick and attach when you save a listing.</p>
+
+      <label class="dropzone dropzone-hero" id="dropLabel" for="filePicker">
+        <span class="dz-emoji">&#128247;</span>
+        <strong class="dz-title">Choose photos</strong>
+        <span class="dz-sub">or drop files here &middot; or paste with <kbd>Ctrl/Cmd</kbd>+<kbd>V</kbd></span>
+      </label>
+      <input type="file" id="filePicker" accept="image/*" multiple hidden />
+
+      <p id="status" class="status"></p>
+      <div id="preview" class="photo-tray photo-grid"></div>
+      <p id="emptyHint" class="tray-empty">Nothing in the tray yet &mdash; added photos will appear here as a grid.</p>
+    </section>
+
+    <aside class="card card-side">
+      <div class="card-head"><h3>What next?</h3></div>
+      <p class="hint side-lead">Done? Close this tab and open BaanRight &mdash; your photos are already in the tray.</p>
+      <div class="steps">
+        <div class="step"><span class="step-n">1</span><span>Add photos here</span></div>
+        <div class="step"><span class="step-n">2</span><span>Open the BaanRight popup</span></div>
+        <div class="step"><span class="step-n">3</span><span>Tick the photos you want, then hit <strong>Save listing</strong></span></div>
+      </div>
+    </aside>
+  </main>
+
+  <div id="toastWrap" class="toast-wrap" aria-live="polite"></div>
+
+  <script src="photo-add.js"></script>
+</body>
+</html>

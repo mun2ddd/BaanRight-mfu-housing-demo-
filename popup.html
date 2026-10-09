@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>BaanRight</title>
+<link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">&#3610;</span>
+      <div class="brand-text">
+        <span class="brand-name">BaanRight</span>
+        <span class="brand-sub">Thai housing posts &rarr; English, in one click</span>
+      </div>
+    </div>
+    <button id="themeToggle" class="icon-btn" title="Toggle dark mode" aria-label="Toggle dark mode">&#127769;</button>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="translate" role="tab" aria-selected="true">
+      <span class="tab-ico">&#127760;</span>Translate
+    </button>
+    <button class="tab" data-tab="saved" role="tab" aria-selected="false">
+      <span class="tab-ico">&#128278;</span>Saved
+      <span id="savedCount" class="tab-badge hidden">0</span>
+    </button>
+    <button class="tab" data-tab="alerts" role="tab" aria-selected="false">
+      <span class="tab-ico">&#128276;</span>Alerts
+    </button>
+  </nav>
+
+  <main>
+    <!-- Translate panel -->
+    <section id="panel-translate" class="panel">
+        <div class="card">
+            <div class="input-modes" role="group" aria-label="Input mode">
+                <button class="mode-btn active" data-mode="text">&#128221; Paste text</button>
+                <button class="mode-btn" data-mode="image">&#128247; Screenshot</button>
+            </div>
+
+            <textarea id="thaiText" aria-label="Thai listing text" placeholder="&#3623;&#3634;&#3591; &#3592;&#3629;&#3610; 1 &#3611;&#3619;&#3632;&#3605;&#3641; &#3648;&#3604;&#3639;&#3629;&#3609;&#3621;&#3632; 6000 &#3610;&#3634;&#3607;..." rows="6"></textarea>
+
+            <div id="imageDrop" class="dropzone hidden">
+                <input type="file" id="imageInput" accept="image/*" />
+                <p class="hint">Screenshot OCR isn't wired up in this build &mdash; paste the post's text instead for now.</p>
+                <img id="imagePreview" class="hidden" alt="Screenshot preview" />
+            </div>
+
+            <label class="field-label" for="sourceLinkInput">Source link (optional)</label>
+            <input type="url" id="sourceLinkInput" placeholder="Paste the Facebook post URL to revisit it later" />
+        </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3>Photos for this listing</h3>
+          <div class="head-actions">
+            <button id="addPhotoBtn" class="mini-btn" title="Add photos from your computer">+ Add</button>
+            <button id="clearTrayBtn" class="mini-btn ghost" title="Remove all photos">Clear</button>
+          </div>
+        </div>
+        <p class="hint">Right-click any photo on Facebook &rarr; &ldquo;Save image to BaanRight&rdquo;, or add files here. Tick the ones to attach when you save.</p>
+        <input type="file" id="photoInput" accept="image/*" multiple hidden />
+        <div id="photoTray" class="photo-tray"><span class="tray-empty">No photos yet</span></div>
+      </div>
+
+      <button id="runBtn" class="primary-btn">Translate &amp; extract</button>
+      <button id="clearTextBtn" class="secondary-btn" type="button" title="Clear the text box and the result">Clear</button>
+      <p id="runStatus" class="status"></p>
+
+      <div id="skeleton" class="skeleton hidden">
+        <div class="sk-line w60"></div>
+        <div class="sk-line"></div>
+        <div class="sk-line w80"></div>
+        <div class="sk-grid">
+          <div class="sk-block"></div>
+          <div class="sk-block"></div>
+          <div class="sk-block"></div>
+          <div class="sk-block"></div>
+        </div>
+      </div>
+
+      <div id="result" class="result hidden">
+        <div class="result-head">
+          <span id="priceHero" class="price-hero hidden"></span>
+        </div>
+
+        <div class="result-block">
+          <div class="block-head">
+            <h3>&#128172; Translation</h3>
+            <button id="copyTransBtn" class="mini-btn" title="Copy English translation">Copy</button>
+          </div>
+          <div class="translation-box"><p id="translatedText"></p></div>
+        </div>
+
+        <div class="result-block">
+          <h3>&#128202; Details</h3>
+          <dl id="detailsList" class="details-grid"></dl>
+        </div>
+
+        <div class="result-block">
+          <h3>&#128205; Distance</h3>
+          <p id="distanceText" class="distance-text"></p>
+        </div>
+
+        <div class="action-row">
+          <button id="saveListingBtn" class="primary-btn">&#128278; Save listing</button>
+          <button id="toggleReplyBtn" class="secondary-btn">&#128172; Ask landlord</button>
+        </div>
+        <p id="saveStatus" class="status"></p>
+
+        <div id="replyPanel" class="reply-panel hidden">
+          <p class="hint">Pick what you want to ask &mdash; we'll translate it to Thai for you.</p>
+          <div id="replyOptions" class="reply-options"></div>
+          <button id="generateReplyBtn" class="primary-btn">Generate Thai message</button>
+          <textarea id="replyOutput" class="hidden" rows="4" readonly></textarea>
+          <button id="copyReplyBtn" class="chip-btn hidden">Copy message</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Saved listings panel -->
+    <section id="panel-saved" class="panel hidden">
+      <div class="toolbar">
+        <input id="savedSearch" type="search" placeholder="Search price, area, phone&hellip;" />
+        <button id="exportBtn" class="mini-btn" title="Export saved listings as CSV">&#128229; Export</button>
+      </div>
+
+      <div id="savedEmpty" class="empty-state">
+        <div class="empty-emoji">&#127968;</div>
+        <p class="empty-title">No saved listings yet</p>
+        <p class="hint">Translate a post and tap &ldquo;Save listing&rdquo; &mdash; price, distance and photos come with it.</p>
+      </div>
+      <ul id="savedList" class="saved-list"></ul>
+      <p id="noMatches" class="empty-state hidden">
+        <span class="empty-emoji">&#128269;</span><br />
+        Nothing matches that search.
+      </p>
+    </section>
+
+    <!-- Alerts panel -->
+    <section id="panel-alerts" class="panel hidden">
+      <div class="card">
+        <div class="card-head"><h3>My preferences</h3></div>
+        <p class="hint">Set a rough budget and area so you can compare listings faster.</p>
+        <div class="alert-form">
+          <input id="alertArea" type="text" placeholder="Preferred area, e.g. Fah Thai market" />
+          <input id="alertPrice" type="number" placeholder="Max price (THB/month)" />
+          <button id="addAlertBtn" class="primary-btn">+ Add preference</button>
+        </div>
+      </div>
+      <ul id="alertsListUI" class="saved-list"></ul>
+      <div id="alertsEmpty" class="empty-state">
+        <div class="empty-emoji">&#128276;</div>
+        <p class="hint">No preferences yet &mdash; add your budget above.</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="toastWrap" class="toast-wrap" aria-live="polite"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
